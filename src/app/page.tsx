@@ -1,65 +1,78 @@
-import Image from "next/image";
+import { request } from "@/lib/datocms";
+import Link from "next/link";
 
-export default function Home() {
+const HOMEPAGE_QUERY = `
+  query HomePage {
+    allArticles {
+      id
+      title
+      slug
+      date
+      coverImage {
+        url
+      }
+    }
+  }
+`;
+
+export default async function Home() {
+  const data: any = await request({
+    query: HOMEPAGE_QUERY,
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen p-6 md:p-12 max-w-5xl mx-auto">
+      {/* Header: Simple terminal style */}
+      <header className="mb-16 border-b border-zinc-800 pb-8">
+        <h1 className="text-4xl font-bold text-white mb-2">
+          &gt; Blog HME ITB
+        </h1>
+        <p className="text-zinc-500">
+          See our latest entries.
+        </p>
+      </header>
+
+      {/* The List: Sharp, Bordered, No Shadows */}
+      <div className="space-y-4"> {/* Using a stack instead of grid for a "List" feel */}
+        {data.allArticles.map((article: any) => (
+          <Link 
+            key={article.id} 
+            href={`/blog/${article.slug}`}
+            className="block group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <div className="border border-zinc-800 p-4 transition-colors hover:border-zinc-500 hover:bg-zinc-900 flex flex-col md:flex-row gap-6 items-start">
+              
+              {/* Image: Square, small, purely functional */}
+              {article.coverImage && (
+                <div className="w-full md:w-48 h-32 shrink-0 bg-zinc-900 border border-zinc-800">
+                  <img 
+                    src={article.coverImage.url} 
+                    alt={article.title} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                  />
+                </div>
+              )}
+
+              {/* Text Content */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2 uppercase tracking-widest">
+                  <span>[{new Date(article.date).toLocaleDateString()}]</span>
+                  <span className="text-zinc-700">|</span>
+                  {/* <span>LOG_ENTRY</span> */}
+                </div>
+
+                <h2 className="text-xl md:text-2xl font-bold text-zinc-100 group-hover:text-green-400 transition-colors mb-2">
+                  {article.title}
+                </h2>
+                
+                <span className="text-sm text-green-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                  &gt; Read More
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
   );
 }
