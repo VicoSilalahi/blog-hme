@@ -60,7 +60,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         <div className="image-wrapper">
           <img 
             src={article.coverImage.url} 
-            className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-500" 
+            className="w-full h-auto grayscale-80 hover:grayscale-0 transition-all duration-500" 
             alt={article.title}
           />
         </div>

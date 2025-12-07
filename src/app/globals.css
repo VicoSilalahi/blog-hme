@@ -148,3 +148,26 @@ body {
   color: var(--muted);
   opacity: 0.95;
 }
+
+.read-more {
+  display: inline-block;
+  color: var(--link);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* reveal read-more when parent Link (group) or card-hover is hovered, also on focus within */
+.group:hover .read-more,
+.card-hover:hover .read-more,
+.group:focus-within .read-more {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* make sure keyboard focus shows it too */
+.read-more:focus,
+.read-more:focus-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

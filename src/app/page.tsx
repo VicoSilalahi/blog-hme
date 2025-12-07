@@ -48,7 +48,7 @@ export default async function Home() {
                   <img 
                     src={article.coverImage.url} 
                     alt={article.title} 
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                    className="w-full h-full object-cover grayscale-80 group-hover:grayscale-0 transition-all"
                   />
                 </div>
               )}
@@ -58,14 +58,14 @@ export default async function Home() {
                 <div className="flex items-center gap-2 text-xs muted mb-2 uppercase tracking-widest">
                   <span>[<time suppressHydrationWarning data-utc={article.date} data-type="date">{new Date(article.date).toISOString().split("T")[0]}</time>]</span>
                   <span className="muted">|</span>
-                  {/* <span>LOG_ENTRY</span> */}
+                  <span>_ARTICLE</span>
                 </div>
 
                 <h2 className="text-xl md:text-2xl font-bold title mb-2">
                   {article.title}
                 </h2>
                 
-                <span className="text-sm" style={{ color: "var(--link)", opacity: 0 }}>
+                <span className="text-sm read-more" tabIndex={-1}>
                   &gt; Read More
                 </span>
               </div>
