@@ -23,28 +23,28 @@ export default async function Home() {
   return (
     <main className="min-h-screen p-6 md:p-12 max-w-5xl mx-auto">
       {/* Header: Simple terminal style */}
-      <header className="mb-16 border-b border-zinc-800 pb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">
+      <header className="mb-16 border-b" style={{ borderColor: "var(--border)" }}>
+        <h1 className="text-4xl font-bold mb-2 var-text">
           &gt; Blog HME ITB
         </h1>
-        <p className="text-zinc-500">
+        <p className="muted">
           See our latest entries.
         </p>
       </header>
 
       {/* The List: Sharp, Bordered, No Shadows */}
-      <div className="space-y-4"> {/* Using a stack instead of grid for a "List" feel */}
+      <div className="space-y-4">
         {data.allArticles.map((article: any) => (
           <Link 
             key={article.id} 
             href={`/blog/${article.slug}`}
             className="block group"
           >
-            <div className="border border-zinc-800 p-4 transition-colors hover:border-zinc-500 hover:bg-zinc-900 flex flex-col md:flex-row gap-6 items-start">
+            <div className="card card-hover p-4 transition-colors flex flex-col md:flex-row gap-6 items-start">
               
               {/* Image: Square, small, purely functional */}
               {article.coverImage && (
-                <div className="w-full md:w-48 h-32 shrink-0 bg-zinc-900 border border-zinc-800">
+                <div className="w-full md:w-48 h-32 shrink-0 card-img-container overflow-hidden">
                   <img 
                     src={article.coverImage.url} 
                     alt={article.title} 
@@ -55,17 +55,17 @@ export default async function Home() {
 
               {/* Text Content */}
               <div className="flex-1">
-                <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2 uppercase tracking-widest">
-                  <span>[{new Date(article.date).toLocaleDateString()}]</span>
-                  <span className="text-zinc-700">|</span>
+                <div className="flex items-center gap-2 text-xs muted mb-2 uppercase tracking-widest">
+                  <span>[<time suppressHydrationWarning data-utc={article.date} data-type="date">{new Date(article.date).toISOString().split("T")[0]}</time>]</span>
+                  <span className="muted">|</span>
                   {/* <span>LOG_ENTRY</span> */}
                 </div>
 
-                <h2 className="text-xl md:text-2xl font-bold text-zinc-100 group-hover:text-green-400 transition-colors mb-2">
+                <h2 className="text-xl md:text-2xl font-bold title mb-2">
                   {article.title}
                 </h2>
                 
-                <span className="text-sm text-green-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-sm" style={{ color: "var(--link)", opacity: 0 }}>
                   &gt; Read More
                 </span>
               </div>

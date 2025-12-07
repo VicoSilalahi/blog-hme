@@ -3,8 +3,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --muted: #6b7280; /* zinc-500 */
+  --border: #e5e7eb; /* light border */
+  --card-bg: #ffffff;
+  --card-bg-hover: #f3f4f6;
+  --link: #065f46; /* green-700-ish */
+  --link-hover: #10b981; /* green-400 */
+  --accent: #10b981;
 }
 
+/* Tailwind/theme compatibility (existing tokens) */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +20,131 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode variables */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --muted: #9ca3af; /* lighter muted in dark */
+    --border: #171717; /* dark border */
+    --card-bg: #0b0b0b;
+    --card-bg-hover: #07101844; /* subtle */
+    --link: #34d399; /* green-300 */
+    --link-hover: #10b981;
+    --accent: #10b981;
   }
 }
 
+/* Body base uses variables */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Semantic utility classes that use variables (keeps JSX concise) */
+.var-text { color: var(--foreground); }
+.muted { color: var(--muted); }
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+.card-hover:hover {
+  border-color: var(--link-hover);
+  background: var(--card-bg-hover);
+}
+.card-img-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+.image-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: .5rem;
+  margin-bottom: 3rem;
+}
+.title { color: var(--foreground); transition: color .15s ease; }
+.title.card-hover:hover { color: var(--link-hover); }
+
+/* light up title when the parent Link (class="group") is hovered */
+.group:hover .title { color: var(--link-hover); }
+
+/* Back link styling: muted by default, accent on hover */
+.back-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.back-link:hover,
+.back-link:focus {
+  color: var(--link-hover);
+}
+
+.prose-custom h1,
+.prose-custom h2,
+.prose-custom h3,
+.prose-custom h4,
+.prose-custom h5,
+.prose-custom h6 {
+  color: var(--foreground);
+  /* keep headings left-aligned */
+  text-align: left;
+}
+
+/* justify paragraph and list text inside StructuredText content */
+.prose-custom p,
+.prose-custom li {
+  color: var(--muted);
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+     -moz-hyphens: auto;
+          hyphens: auto;
+}
+
+/* keep blockquotes and other special blocks left-aligned for readability */
+.prose-custom blockquote {
+  color: var(--muted);
+  text-align: left;
+}
+
+.prose-custom a {
+  color: var(--link);
+}
+.prose-custom img {
+  border: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  padding-top: .5rem;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+  background: transparent;
+}
+
+/* make footer links follow theme variables */
+.site-footer a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.site-footer a:hover,
+.site-footer a:focus {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* small utility to keep footer text subtle on small screens */
+.site-footer .muted-strong {
+  color: var(--muted);
+  opacity: 0.95;
 }
