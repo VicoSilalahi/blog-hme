@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Blog HME Jimmyahhh",
   description: "Jimmyahhh blog bebas aja sih",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
