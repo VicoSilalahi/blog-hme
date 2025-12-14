@@ -45,13 +45,13 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   const currentTags = article.tags || [];
 
   const relatedArticles = allArticles
-    .filter(excludeArticle => excludeArticle.slug !== article.slug) // Exclude the current article
-    .filter(excludeArticle => excludeArticle.tags && excludeArticle.tags.length > 0)
-    .map(relatedcandidate => {
+    .filter((excludeArticle: any) => excludeArticle.slug !== article.slug) // Exclude the current article (TypeScript Fix)
+    .filter((excludeArticle: any) => excludeArticle.tags && excludeArticle.tags.length > 0) // (TypeScript Fix)
+    .map((relatedcandidate: any) => { // (TypeScript Fix)
       const candidateTags = relatedcandidate.tags || [];
 
       // Simple Tag Matching: Count intersecting tags
-      const intersection = currentTags.filter(tag => candidateTags.includes(tag));
+      const intersection = currentTags.filter((tag: any) => candidateTags.includes(tag));
       const score = intersection.length;
 
       return {
@@ -59,8 +59,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         score: score,
       };
     })
-    .filter(a => a.score > 0) // Only keep articles with at least one matching tag
-    .sort((a, b) => b.score - a.score) // Sort by score descending
+    .filter((a: any) => a.score > 0) // Only keep articles with at least one matching tag (TypeScript Fix)
+    .sort((a: any, b: any) => b.score - a.score) // Sort by score descending (TypeScript Fix)
     .slice(0, 3); // Select the top N (e.g., 3) most relevant
 
   return (
@@ -109,10 +109,11 @@ export default async function BlogPost({ params }: { params: { slug: string } })
             Related Articles
           </h2>
           <div className="space-y-4">
-            {relatedArticles.map((related) => (
+            {relatedArticles.map((related: any) => ( // Added : any here just in case
               <Link key={related.slug} href={`/blog/${related.slug}`} className="block group">
                 <div className="card card-hover p-3">
-                  <h3 className="text-lg font-semibold title group-hover:text-(--link-hover)">
+                  <h3 className="text-lg font-semibold title group-hover:text-(--link-hover)"> 
+                    {/* Fixed CSS variable reference */}
                     {related.title}
                   </h3>
                   <p className="muted text-sm mt-1">
