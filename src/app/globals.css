@@ -7,7 +7,7 @@
   --border: #e5e7eb; /* light border */
   --card-bg: #ffffff;
   --card-bg-hover: #f3f4f6;
-  --link: #065f46; /* green-700-ish */
+  --link: #13382e; /* green-700-ish */
   --link-hover: #10b981; /* green-400 */
   --accent: #10b981;
 }
@@ -29,7 +29,7 @@
     --border: #171717; /* dark border */
     --card-bg: #0b0b0b;
     --card-bg-hover: #07101844; /* subtle */
-    --link: #34d399; /* green-300 */
+    --link: #1f7052; /* green-300 */
     --link-hover: #10b981;
     --accent: #10b981;
   }
@@ -42,7 +42,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Semantic utility classes that use variables (keeps JSX concise) */
+/* Semantic utility classes that use variables */
 .var-text { color: var(--foreground); }
 .muted { color: var(--muted); }
 .card {
@@ -110,7 +110,24 @@ body {
 
 .prose-custom a {
   color: var(--link);
+  text-decoration: none;
+  transition: color .15s ease;
 }
+.prose-custom a:hover,
+.prose-custom a:focus {
+  color: var(--link-hover)
+}
+
+/* .back-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.back-link:hover,
+.back-link:focus {
+  color: var(--link-hover);
+} */
+
 .prose-custom img {
   border: 1px solid var(--border);
   border-radius: 0;
@@ -143,7 +160,7 @@ body {
   text-decoration: underline;
 }
 
-/* small utility to keep footer text subtle on small screens */
+/* Keep footer text subtle on small screens */
 .site-footer .muted-strong {
   color: var(--muted);
   opacity: 0.95;
@@ -157,7 +174,7 @@ body {
   transition: opacity .18s ease, transform .18s ease;
 }
 
-/* reveal read-more when parent Link (group) or card-hover is hovered, also on focus within */
+/* Reveal Read More biar light up */
 .group:hover .read-more,
 .card-hover:hover .read-more,
 .group:focus-within .read-more {
@@ -165,7 +182,7 @@ body {
   transform: translateY(0);
 }
 
-/* make sure keyboard focus shows it too */
+/* Keyboard focus */
 .read-more:focus,
 .read-more:focus-visible {
   opacity: 1;

@@ -22,7 +22,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen p-6 md:p-12 max-w-5xl mx-auto">
-      {/* Header: Simple terminal style */}
+      {/* Header*/}
       <header className="mb-16 border-b" style={{ borderColor: "var(--border)" }}>
         <h1 className="text-4xl font-bold mb-2 var-text">
           &gt; Blog HME ITB
@@ -32,7 +32,7 @@ export default async function Home() {
         </p>
       </header>
 
-      {/* The List: Sharp, Bordered, No Shadows */}
+      {/* List of Content*/}
       <div className="space-y-4">
         {data.allArticles.map((article: any) => (
           <Link 
@@ -42,7 +42,7 @@ export default async function Home() {
           >
             <div className="card card-hover p-4 transition-colors flex flex-col md:flex-row gap-6 items-start">
               
-              {/* Image: Square, small, purely functional */}
+              {/* Image Preview*/}
               {article.coverImage && (
                 <div className="w-full md:w-48 h-32 shrink-0 card-img-container overflow-hidden">
                   <img 

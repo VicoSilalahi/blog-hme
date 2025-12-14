@@ -55,7 +55,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         </p>
       </header>
 
-      {/* Featured Image - Flexible Borders */}
+      {/* Main Image*/}
       {article.coverImage && (
         <div className="image-wrapper">
           <img 
@@ -66,8 +66,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         </div>
       )}
 
-      {/* Content - use prose-custom that relies on variables */}
-      <div className="prose prose-zinc max-w-none prose-custom">
+      {/* Content */}
+      <div className="max-w-none prose-custom">
         <StructuredText data={article.content} />
       </div>
 
