@@ -52,11 +52,11 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
       // Simple Tag Matching: Count intersecting tags
       const intersection = currentTags.filter((tag: any) => candidateTags.includes(tag));
-      const score = intersection.length;
 
       return {
         ...relatedcandidate,
-        score: score,
+        matchingTags: intersection,
+        score: intersection.length,
       };
     })
     .filter((a: any) => a.score > 0) // Only keep articles with at least one matching tag (TypeScript Fix)
@@ -84,6 +84,16 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         <p className="muted font-mono text-sm">
           TIMESTAMP: <time suppressHydrationWarning data-utc={article.date} data-type="datetime">{new Date(article.date).toISOString()}</time>
         </p>
+        {/* Tags */}
+        {article.tags && article.tags.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {article.tags.map((tag: string) => (
+              <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.04)] muted">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       {/* Main Image*/}
@@ -111,15 +121,20 @@ export default async function BlogPost({ params }: { params: { slug: string } })
           <div className="space-y-4">
             {relatedArticles.map((related: any) => ( // Added : any here just in case
               <Link key={related.slug} href={`/blog/${related.slug}`} className="block group">
-                <div className="card card-hover p-3">
-                  <h3 className="text-lg font-semibold title group-hover:text-(--link-hover)"> 
-                    {/* Fixed CSS variable reference */}
-                    {related.title}
-                  </h3>
-                  <p className="muted text-sm mt-1">
-                    Relevance: {related.score} matching tags.
-                  </p>
-                </div>
+                    <div className="card card-hover p-3">
+                      <h3 className="text-lg font-semibold title group-hover:text-(--link-hover)"> 
+                        {related.title}
+                      </h3>
+                      {related.matchingTags && related.matchingTags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {related.matchingTags.map((t: string) => (
+                            <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.04)] muted">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
               </Link>
             ))}
           </div>

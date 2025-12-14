@@ -11,6 +11,7 @@ const HOMEPAGE_QUERY = `
       coverImage {
         url
       }
+      tags
       content {
         value
       }
@@ -116,7 +117,16 @@ export default async function Home() {
                   </div>
                 </div>
 
-                
+                {/* Tags */}
+                {article.tags && article.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {article.tags.map((tag: string) => (
+                      <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.04)] text-muted">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 <div className="mt-3">
                   <span className="text-sm read-more" tabIndex={-1}>
