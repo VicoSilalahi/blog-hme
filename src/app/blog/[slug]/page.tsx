@@ -14,11 +14,19 @@ const POST_QUERY = `
       coverImage {
         url
       }
+      tags
+      slug
+    }
+    allArticles {
+      title
+      slug
+      tags
     }
   }
 `;
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
+  // Data fetch
   const { slug } = await params;
 
   const data: any = await request({
@@ -30,7 +38,30 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     notFound();
   }
 
-  const { article } = data;
+  // Data parsing
+  const { article, allArticles } = data;
+
+  // Data scoring
+  const currentTags = article.tags || [];
+
+  const relatedArticles = allArticles
+    .filter(excludeArticle => excludeArticle.slug !== article.slug) // Exclude the current article
+    .filter(excludeArticle => excludeArticle.tags && excludeArticle.tags.length > 0)
+    .map(relatedcandidate => {
+      const candidateTags = relatedcandidate.tags || [];
+
+      // Simple Tag Matching: Count intersecting tags
+      const intersection = currentTags.filter(tag => candidateTags.includes(tag));
+      const score = intersection.length;
+
+      return {
+        ...relatedcandidate,
+        score: score,
+      };
+    })
+    .filter(a => a.score > 0) // Only keep articles with at least one matching tag
+    .sort((a, b) => b.score - a.score) // Sort by score descending
+    .slice(0, 3); // Select the top N (e.g., 3) most relevant
 
   return (
     <article className="min-h-screen p-6 md:p-12 max-w-4xl mx-auto">
@@ -71,6 +102,28 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         <StructuredText data={article.content} />
       </div>
 
+      {/* Related Posts Section */}
+      {relatedArticles.length > 0 && (
+        <section className="mt-16 pt-8 border-t" style={{ borderColor: "var(--border)" }}>
+          <h2 className="text-2xl font-bold mb-6">
+            Related Articles
+          </h2>
+          <div className="space-y-4">
+            {relatedArticles.map((related) => (
+              <Link key={related.slug} href={`/blog/${related.slug}`} className="block group">
+                <div className="card card-hover p-3">
+                  <h3 className="text-lg font-semibold title group-hover:text-(--link-hover)">
+                    {related.title}
+                  </h3>
+                  <p className="muted text-sm mt-1">
+                    Relevance: {related.score} matching tags.
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
       {/* Footer */}
       <div className="mt-20 pt-8 footer text-center text-sm">
         EOF
