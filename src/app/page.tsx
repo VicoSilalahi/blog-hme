@@ -11,6 +11,9 @@ const HOMEPAGE_QUERY = `
       coverImage {
         url
       }
+      content {
+        value
+      }
     }
   }
 `;
@@ -34,44 +37,96 @@ export default async function Home() {
 
       {/* List of Content*/}
       <div className="space-y-4">
-        {data.allArticles.map((article: any) => (
-          <Link 
-            key={article.id} 
-            href={`/blog/${article.slug}`}
-            className="block group"
-          >
-            <div className="card card-hover p-4 transition-colors flex flex-col md:flex-row gap-6 items-start">
-              
-              {/* Image Preview*/}
-              {article.coverImage && (
-                <div className="w-full md:w-48 h-32 shrink-0 card-img-container overflow-hidden">
-                  <img 
-                    src={article.coverImage.url} 
-                    alt={article.title} 
-                    className="w-full h-full object-cover grayscale-80 group-hover:grayscale-0 transition-all"
-                  />
-                </div>
-              )}
+        {data.allArticles.map((article: any) => {
+          // extract plain text from DatoCMS StructuredText AST
+          const extractText = (node: any): string => {
+            const parts: string[] = [];
+            const walk = (n: any) => {
+              if (!n) return;
+              if (Array.isArray(n)) return n.forEach(walk);
+              if (typeof n !== "object") return; // skip primitive values
 
-              {/* Text Content */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-xs muted mb-2 uppercase tracking-widest">
-                  <span>[<time suppressHydrationWarning data-utc={article.date} data-type="date">{new Date(article.date).toISOString().split("T")[0]}</time>]</span>
-                  <span className="muted">|</span>
-                  <span>_ARTICLE</span>
+              // common leaf text locations
+              if (n.type === "span" && typeof n.value === "string") {
+                parts.push(n.value);
+                return;
+              }
+              if (typeof n.value === "string") {
+                parts.push(n.value);
+                return;
+              }
+              if (typeof n.text === "string") {
+                parts.push(n.text);
+                return;
+              }
+
+              // traverse common container fields
+              if (Array.isArray(n.children)) return n.children.forEach(walk);
+              if (Array.isArray(n.content)) return n.content.forEach(walk);
+              if (n.document && Array.isArray(n.document.children)) return n.document.children.forEach(walk);
+
+              // fallback: traverse object values but only recurse into objects/arrays
+              Object.values(n).forEach((v) => {
+                if (typeof v === "object") walk(v);
+              });
+            };
+            walk(node);
+            return parts.join(" ").replace(/\s+/g, " ").trim();
+          };
+
+          const raw = article.content?.value;
+          const fullText = raw ? extractText(raw) : "";
+          const preview = fullText ? (fullText.length > 160 ? fullText.slice(0, 160).trim() + "..." : fullText) : "";
+
+          return (
+            <Link key={article.id} href={`/blog/${article.slug}`} className="block group">
+              <div className="card card-hover p-4 transition-colors">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  {/* Image Preview*/}
+                  {article.coverImage && (
+                    <div className="w-full md:w-48 h-32 shrink-0 card-img-container overflow-hidden">
+                      <img
+                        src={article.coverImage.url}
+                        alt={article.title}
+                        className="w-full h-full object-cover grayscale-80 group-hover:grayscale-0 transition-all"
+                      />
+                    </div>
+                  )}
+
+                  {/* Title + Meta */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-xs muted mb-2 uppercase tracking-widest">
+                      <span>[<time suppressHydrationWarning data-utc={article.date} data-type="date">{new Date(article.date).toISOString().split("T")[0]}</time>]</span>
+                      <span className="muted">|</span>
+                      <span>_ARTICLE</span>
+                    </div>
+
+                    <h2 className="text-xl md:text-2xl font-bold title mb-2">
+                      {article.title}
+                    </h2>
+
+
+
+                    {/* {Preview} */}
+                    {preview && (
+                      <p className="text-sm muted mt-3" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {preview}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <h2 className="text-xl md:text-2xl font-bold title mb-2">
-                  {article.title}
-                </h2>
                 
-                <span className="text-sm read-more" tabIndex={-1}>
-                  &gt; Read More
-                </span>
+
+                <div className="mt-3">
+                  <span className="text-sm read-more" tabIndex={-1}>
+                    &gt; Read More
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </main>
   );
